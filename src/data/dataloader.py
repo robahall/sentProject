@@ -33,6 +33,8 @@ class IMDBDataModule(pl.LightningDataModule):
                               ) # Creates our word embeddings
         self.label.build_vocab(self.train)
         self.dims = len(self.text.vocab)
+        self.pad_idx = self.text.vocab.stoi[self.text.pad_token]
+        self.unk_idx = self.text.vocab.stoi[self.text.unk_token]
 
     def train_dataloader(self):
         #transforms = ...
