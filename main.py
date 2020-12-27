@@ -1,5 +1,7 @@
 
 import argparse
+import warnings
+warnings.filterwarnings("ignore", category=FutureWarning)
 from datetime import datetime
 
 import torch
@@ -11,8 +13,9 @@ from src.models.rnn import RNN
 from src.data.dataloader import IMDBDataModule
 
 
-def main(hparams):
 
+
+def main(hparams):
     exp_time = datetime.now().strftime("%Y%m%d_%H%M%S")
     tb_logger = TensorBoardLogger(save_dir='logs/',
                                   version=f'v_{exp_time}')
@@ -40,7 +43,6 @@ def main(hparams):
 
 
 if __name__ == "__main__":
-
     parser = argparse.ArgumentParser(description="Simple Sentiment Analysis",
                                      add_help=True)
 
@@ -48,15 +50,15 @@ if __name__ == "__main__":
         "--min_epochs",
         default=5,
         type=int,
-        help= "Min number of epochs to try."
-        )
+        help="Min number of epochs to try."
+    )
 
     parser.add_argument(
         "--max_epochs",
         default=5,
         type=int,
-        help= "Max number of epochs to try."
-        )
+        help="Max number of epochs to try."
+    )
     parser.add_argument(
         "--gpus",
         default=1,
@@ -73,6 +75,11 @@ if __name__ == "__main__":
         "--deterministic",
         action='store_false',
         help='Utilize only deterministic algorithms (repeatable results). '
+    )
+    parser.add_argument(
+        "--include_lengths",
+        action='store_false',
+        help="Forces a NN to process only the non-padded elements in sequence.",
     )
 
     parser = RNN.add_model_specific_args(parser)
