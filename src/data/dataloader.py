@@ -11,7 +11,7 @@ class IMDBDataModule(pl.LightningDataModule):
     def __init__(self, hparams, random_seed=random.seed(123)):
         super().__init__()
         self.random_seed = random_seed
-        self.text = data.Field(tokenize='spacy')
+        self.text = data.Field(tokenize='spacy', include_lengths=hparams.include_lengths)
         self.label = data.LabelField(dtype=torch.float)
         self.batch_size = hparams.batch_size
 
@@ -39,6 +39,7 @@ class IMDBDataModule(pl.LightningDataModule):
     def test_dataloader(self):
         #transforms = ...
         return data.BucketIterator(self.test, batch_size=self.batch_size)
+
 
 if __name__ == "__main__":
     #hparams =
