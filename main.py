@@ -69,6 +69,11 @@ if __name__ == "__main__":
         type=int,
         help="Batch size to be used."
     )
+    parser.add_argument(
+        "--deterministic",
+        action='store_false',
+        help='Utilize only deterministic algorithms (repeatable results). '
+    )
 
     parser = RNN.add_model_specific_args(parser)
     hparams = parser.parse_args()
