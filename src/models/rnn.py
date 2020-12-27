@@ -37,10 +37,7 @@ class RNN(pl.LightningModule):
     def validation_step(self, val_batch, batch_idx):
         x, y = val_batch
         logits = self(x)
-        #print(logits.shape)
         logits = logits.squeeze(1)
-        #print(logits.shape)
-        #print(y.shape)
         assert logits.shape == y.shape
         loss = self.criterion(logits, y)
         self.log('val_loss', loss)
@@ -50,10 +47,7 @@ class RNN(pl.LightningModule):
     def test_step(self, test_batch, batch_idx):
         x, y = test_batch
         logits = self(x)
-        #print(logits.shape)
         logits = logits.squeeze(1)
-        #print(logits.shape)
-        #print(y.shape)
         assert logits.shape == y.shape
         loss = self.criterion(logits, y)
         self.log('test_loss', loss)
@@ -65,8 +59,7 @@ class RNN(pl.LightningModule):
         return optimizer
 
     @classmethod
-    def add_model_specific_args(
-        cls, parser):
+    def add_model_specific_args(cls, parser):
         """ Parser for Estimator specific arguments/hyperparameters.
         :param parser: argparse.ArgumentParser
         Returns:
@@ -94,7 +87,7 @@ class RNN(pl.LightningModule):
             "--output_dim",
             default=1,
             type=int,
-            help="utput dimension is usually the number of classes, however in \
+            help="output dimension is usually the number of classes, however in \
             the case of only 2 classes the output value is between 0 and 1 and \
             thus can be 1-dimensional, i.e. a single scalar real number.",
         )
