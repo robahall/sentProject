@@ -18,8 +18,8 @@ class LSTM(pl.LightningModule):
                            bidirectional=self.hparams.bidirectional,
                            dropout=self.hparams.dropout
                            )
-
-        self.fc = nn.Linear(self.hparams.hidden_dim, self.hparams.output_dim)
+        self.fc = nn.Linear(self.hparams.hidden_dim*2,
+                            self.hparams.output_dim)
         self.dropout = nn.Dropout(self.hparams.dropout)
         self.criterion = torch.nn.BCEWithLogitsLoss()
         self.train_acc = pl.metrics.Accuracy()
