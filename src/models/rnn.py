@@ -14,6 +14,7 @@ class RNN(pl.LightningModule):
         self.criterion = torch.nn.BCEWithLogitsLoss()
         self.train_acc = pl.metrics.Accuracy()
         self.valid_acc = pl.metrics.Accuracy()
+        self.test_acc = pl.metrics.Accuracy()
 
 
     def forward(self, x):
@@ -47,8 +48,17 @@ class RNN(pl.LightningModule):
         self.log('val_acc', self.valid_acc, on_step=True, on_epoch=True)
 
     def test_step(self, test_batch, batch_idx):
-        self.validation_step(test_batch, batch_idx)
-        metrics = {}
+        x, y = test_batch
+        logits = self(x)
+        #print(logits.shape)
+        logits = logits.squeeze(1)
+        #print(logits.shape)
+        #print(y.shape)
+        assert logits.shape == y.shape
+        loss = self.criterion(logits, y)
+        self.log('test_loss', loss)
+        self.test_acc(logits, y)
+        self.log('test_acc', self.test_acc, on_step=True, on_epoch=True)
 
     def configure_optimizers(self):
         optimizer = torch.optim.SGD(self.parameters(), lr=1e-3)
