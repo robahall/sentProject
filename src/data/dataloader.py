@@ -11,7 +11,9 @@ class IMDBDataModule(pl.LightningDataModule):
     def __init__(self, hparams, random_seed=random.seed(123)):
         super().__init__()
         self.random_seed = random_seed
-        self.text = data.Field(tokenize='spacy', include_lengths=hparams.include_lengths)
+        self.text = data.Field(tokenize='spacy',  # Use spaCy tokenizer
+                               include_lengths=hparams.include_lengths  #how long our sequence is (tuple)
+                               )
         self.label = data.LabelField(dtype=torch.float)
         self.batch_size = hparams.batch_size
 
@@ -24,21 +26,25 @@ class IMDBDataModule(pl.LightningDataModule):
         MAX_VOCAB_SIZE = 25000
         self.train, self.test = datasets.IMDB.splits(self.text, self.label, root=ROOT_DIR / 'data')
         self.train, self.val = self.train.split(random_state=self.random_seed)
-        self.text.build_vocab(self.train, max_size=MAX_VOCAB_SIZE)
+        self.text.build_vocab(self.train,
+                              max_size=MAX_VOCAB_SIZE,
+                              vectors="glove.6B.100d", # Pre trained embedding https://nlp.stanford.edu/projects/glove/
+                              unk_init=torch.Tensor.normal_
+                              ) # Creates our word embeddings
         self.label.build_vocab(self.train)
         self.dims = len(self.text.vocab)
 
     def train_dataloader(self):
         #transforms = ...
-        return data.BucketIterator(self.train, batch_size=self.batch_size)
+        return data.BucketIterator(self.train, batch_size=self.batch_size, sort_within_batch=True)
 
     def val_dataloader(self):
         #transforms = ...
-        return data.BucketIterator(self.val, batch_size=self.batch_size)
+        return data.BucketIterator(self.val, batch_size=self.batch_size, sort_within_batch=True)
 
     def test_dataloader(self):
         #transforms = ...
-        return data.BucketIterator(self.test, batch_size=self.batch_size)
+        return data.BucketIterator(self.test, batch_size=self.batch_size, sort_within_batch=True)
 
 
 if __name__ == "__main__":
