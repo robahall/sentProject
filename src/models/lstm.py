@@ -38,8 +38,7 @@ class LSTM(pl.LightningModule):
     def training_step(self, train_batch, batch_idx):
         x, x_len = train_batch.text
         y = train_batch.label
-        logits = self(x, x_len)
-        logits = logits.squeeze(1)
+        logits = self(x, x_len).squeeze(1)
         assert logits.shape == y.shape
         loss = self.criterion(logits, y)
         self.log('train_loss', loss, on_step=True, on_epoch=True, prog_bar=True, logger=True)
@@ -50,8 +49,7 @@ class LSTM(pl.LightningModule):
     def validation_step(self, val_batch, batch_idx):
         x, x_len = val_batch.text
         y = val_batch.label
-        logits = self(x, x_len)
-        logits = logits.squeeze(1)
+        logits = self(x, x_len).squeeze(1)
         assert logits.shape == y.shape
         loss = self.criterion(logits, y)
         self.log('val_loss', loss)
@@ -61,8 +59,7 @@ class LSTM(pl.LightningModule):
     def test_step(self, test_batch, batch_idx):
         x, x_len = test_batch.text
         y = test_batch.label
-        logits = self(x, x_len)
-        logits = logits.squeeze(1)
+        logits = self(x, x_len).squeeze(1)
         assert logits.shape == y.shape
         loss = self.criterion(logits, y)
         self.log('test_loss', loss)
