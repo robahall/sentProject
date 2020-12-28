@@ -30,6 +30,8 @@ def main(hparams):
     model = RNN(input_dim=data.dims,
                 hparams=hparams)
 
+
+
     trainer = Trainer(logger=tb_logger,
                       gpus=hparams.gpus,
                       max_epochs=hparams.max_epochs,
