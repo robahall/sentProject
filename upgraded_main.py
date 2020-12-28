@@ -22,7 +22,6 @@ def main(hparams):
 
     gpu_stats = GPUStatsMonitor()
 
-
     data = IMDBDataModule(hparams=hparams)
     data.prepare_data()
     data.setup()
@@ -32,7 +31,7 @@ def main(hparams):
                  pad_idx=data.pad_idx
                  )
 
-    model.embedding.weight.data.copy_(data.text.vocab.vectors) # Load pre-trained vectors
+    model.embedding.weight.data.copy_(data.text.vocab.vectors)  # Load pre-trained vectors
     model.embedding.weight.data[data.unk_idx] = torch.zeros(hparams.embedding_dim)
     model.embedding.weight.data[data.pad_idx] = torch.zeros(hparams.embedding_dim)
 
@@ -73,7 +72,7 @@ if __name__ == "__main__":
 
     parser.add_argument(
         "--batch_size",
-        default=16,
+        default=32,
         type=int,
         help="Batch size to be used."
     )
